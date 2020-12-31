@@ -1,50 +1,27 @@
-<h2>MacroExpress
+<h2>Macro XML-RPC
   <img src="http://zeezide.com/img/macro/MacroExpressIcon128.png"
        align="right" width="100" height="100" />
 </h2>
 
-A small, unopinionated "don't get into my way" / "I don't wanna `wait`" 
-asynchronous web framework for Swift.
-With a strong focus on replicating the Node APIs in Swift.
-But in a typesafe, and fast way.
+XML-RPC support for
+[MacroExpress](https://github.com/Macro-swift/MacroExpress).
 
-MacroExpress is a more capable variant of 
-[µExpress](https://github.com/NozeIO/MicroExpress).
-The goal is still to keep a small core, but add some 
-[Noze.io](http://noze.io)
-modules and concepts.
-
-MacroExpress adds the web framework components to
-[Macro](https://github.com/Macro-swift/Macro/)
-(kinda like `Express.js` adds to `Node.js`).
-
-[MacroLambda](https://github.com/Macro-swift/MacroLambda) has the bits to
-directly deploy MacroExpress applications on AWS Lambda.
-[MacroApp](https://github.com/Macro-swift/MacroApp) adds a SwiftUI-style
-declarative DSL to setup MacroExpress routes.
+This is covered in the
+[Writing an Swift XML-RPC Server](http://www.alwaysrightinstitute.com/macro-xmlrpc/)
+blog entry.
 
 
 ## What does it look like?
 
-The Macro [Examples](https://github.com/Macro-swift/Examples) package 
-contains a few examples which all can run straight from the source as
-swift-sh scripts.
-
 ```swift
 #!/usr/bin/swift sh
-import MacroExpress // @Macro-swift ~> 0.5.5
+import MacroExpress // @Macro-swift
+import MacroXmlRpc  // @Macro-swift
 
 let app = express()
-app.use(logger("dev"))
-app.use(bodyParser.urlencoded())
-app.use(serveStatic(__dirname() + "/public"))
+app.use(logger("dev"), bodyParser.text())
 
-app.get("/hello") { req, res, next in
-  res.send("Hello World!")
-}
-app.get {
-  res.render("index")
-}
+// TODO
 
 app.listen(1337)
 ```
@@ -62,20 +39,19 @@ app.listen(1337)
 
 ### Links
 
+- [Writing an Swift XML-RPC Server](http://www.alwaysrightinstitute.com/macro-xmlrpc/)
+- [MacroExpress](https://github.com/Macro-swift/MacroExpress).
 - [Macro](https://github.com/Macro-swift/Macro/)
-- [µExpress](http://www.alwaysrightinstitute.com/microexpress-nio2/)
-- [Noze.io](http://noze.io)
-- [SwiftNIO](https://github.com/apple/swift-nio)
-- JavaScript Originals
-  - [Connect](https://github.com/senchalabs/connect)
-  - [Express.js](http://expressjs.com/en/starter/hello-world.html)
-- Swift Apache
-  - [mod_swift](http://mod-swift.org)
-  - [ApacheExpress](http://apacheexpress.io)
+- [XML-RPC Homepage](http://xmlrpc.com)
+  - [XML-RPC Spec](http://xmlrpc.com/spec.md)
+  - [XML-RPC for Newbies](http://scripting.com/davenet/1998/07/14/xmlRpcForNewbies.html)
+  - [Original site](http://1998.xmlrpc.com)
+  - [XML-RPC HowTo](https://tldp.org/HOWTO/XML-RPC-HOWTO/index.html) by Eric Kidd
+- [Python](https://docs.python.org/3/library/xmlrpc.client.html#module-xmlrpc.client) Client
 
 ### Who
 
-**MacroExpress** is brought to you by
+**Macro XML-RPC** is brought to you by
 the
 [Always Right Institute](http://www.alwaysrightinstitute.com)
 and
