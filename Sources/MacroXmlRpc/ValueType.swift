@@ -11,7 +11,9 @@ import protocol XmlRpc.XmlRpcValueRepresentable
 public extension XmlRpc.Value {
   
   /**
-   * The various possible XML-RPC value types.
+   * The various possible XML-RPC value types used in XML-RPC introspection.
+   * Note that those are flat, i.e. arrays and dictionaries are not further
+   * described.
    */
   @frozen
   enum ValueType: Hashable {
@@ -19,7 +21,7 @@ public extension XmlRpc.Value {
     case string, bool, int, double, dateTime, data
     case array, dictionary
   }
-
+  
   @inlinable
   var xmlRpcValueType: ValueType {
     switch self {
