@@ -26,11 +26,10 @@ public extension RouteKeeper {
           
   @inlinable
   @discardableResult
-  func rpc<A1>(_ methodName: String,
-               execute: @escaping ( A1 )
-                          throws -> XmlRpcValueRepresentable)
+  func rpc<A1, R>(_ methodName: String, execute: @escaping ( A1 ) throws -> R)
        -> Self
-       where A1: XmlRpcValueRepresentable
+       where A1 : XmlRpcValueRepresentable,
+             R  : XmlRpcValueRepresentable
   {
     rpc(methodName) { call in
       guard call.parameters.count == 1,
@@ -42,12 +41,12 @@ public extension RouteKeeper {
           
   @inlinable
   @discardableResult
-  func rpc<A1, A2>(_ methodName: String,
-                   execute: @escaping ( A1, A2 )
-                              throws -> XmlRpcValueRepresentable)
+  func rpc<A1, A2, R>(_ methodName: String,
+                      execute: @escaping ( A1, A2 ) throws -> R)
        -> Self
-       where A1: XmlRpcValueRepresentable,
-             A2: XmlRpcValueRepresentable
+       where A1 : XmlRpcValueRepresentable,
+             A2 : XmlRpcValueRepresentable,
+             R  : XmlRpcValueRepresentable
   {
     rpc(methodName) { call in
       guard call.parameters.count == 2,

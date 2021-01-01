@@ -55,7 +55,6 @@ public extension xmlrpc {
         do {
           let value = try execute(call)
           
-          req.log.log("executed request:", call.methodName)
           return res.send(XmlRpc.Response.value(value.xmlRpcValue).xmlString)
         }
         catch let error as XmlRpc.Fault {
