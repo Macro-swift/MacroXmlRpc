@@ -11,6 +11,8 @@ let package = Package(
   ],
   
   dependencies: [
+    .package(url: "https://github.com/Macro-swift/Macro.git",
+             from: "0.6.0"),
     .package(url: "https://github.com/Macro-swift/MacroExpress.git",
              from: "0.5.7"),
     .package(url: "https://github.com/AlwaysRightInstitute/SwiftXmlRpc.git",
@@ -18,6 +20,7 @@ let package = Package(
   ],
   
   targets: [
-    .target(name: "MacroXmlRpc", dependencies: [ "MacroExpress", "XmlRpc" ])
+    .target(name: "MacroXmlRpc",
+            dependencies: [ "Macro", "MacroExpress", "XmlRpc" ])
   ]
 )
