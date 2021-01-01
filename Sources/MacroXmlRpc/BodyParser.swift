@@ -23,19 +23,30 @@ public extension bodyParser {
    *
    * Usage:
    *
-   *     app.use(bodyParser.xmlRpcCall())
+   *     app.route("/RPC2")
+   *        .use(bodyParser.xmlRpcCall())
+   *        .post("/RPC2") { req, res, next in
+   *          guard let call = req.xmlRpcCall else { return next() }
+   *          console.log("received call:", call)
+   *        }
    *
-   *     app.post("/RPC2") { req, res, next in
-   *       guard let call = req.xmlRpcCall else { return next() }
-   *       console.log("received call:", call)
-   *     }
+   * Note: Do not unnecessary call this middleware, i.e. maybe not at the top
+   *       level, but rather as part of an actual XML-RPC route.
    *
    * This plays well w/ other body parsers. If no other parser was active,
    * it will fill `request.body` as `.text`.
    */
-  func xmlRpcCall() -> Middleware {
+  @inlinable
+  static func xmlRpcCall() -> Middleware {
     return { req, res, next in
       if req.extra[xmlRpcRequestKey] != nil { return next() } // parsed already
+      
+      func registerCallInLogger() {
+        guard let call = req.xmlRpcCall else { return }
+        // If we parsed an XML-RPC call, add its method name to the logging
+        // meta data. It is important contextual information.
+        req.log[metadataKey: "xmlrpc"] = .string(call.methodName)
+      }
       
       // This deals w/ other bodyParsers being active. If we already have
       // content (e.g. from bodyParser.text or .raw) we reuse that.
@@ -51,6 +62,7 @@ public extension bodyParser {
               req.body       = .text(string)
               req.xmlRpcBody = XmlRpc.parseCall(string).flatMap { .call($0) }
                            ?? .invalid
+              registerCallInLogger()
               return nil
             }
             catch {
@@ -75,6 +87,7 @@ public extension bodyParser {
             req.body       = .text(string)
             req.xmlRpcBody = XmlRpc.parseCall(string).flatMap { .call($0) }
                          ?? .invalid
+            registerCallInLogger()
           }
           catch {
             // In this case, this doesn't have to be an error. Could be some
@@ -86,6 +99,7 @@ public extension bodyParser {
         case .text(let string):
           req.xmlRpcBody = XmlRpc.parseCall(string).flatMap { .call($0) }
                        ?? .invalid
+          registerCallInLogger()
           return next()
       }
     }
@@ -126,9 +140,10 @@ public extension IncomingMessage {
 
 // MARK: - Helper
 
-private func concatError(request : IncomingMessage,
-                         next    : @escaping Next,
-                         handler : @escaping ( Buffer ) -> Swift.Error?)
+@usableFromInline
+func concatError(request : IncomingMessage,
+                 next    : @escaping Next,
+                 handler : @escaping ( Buffer ) -> Swift.Error?)
 {
   var didCallNext = false
   

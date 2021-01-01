@@ -18,44 +18,7 @@ public extension RouteKeeper {
              ( XmlRpc.Call ) throws -> XmlRpcValueRepresentable)
        -> Self
   {
-    post { req, res, next in
-      if let methodName = methodName {
-        let methods = (req.extra["rpc.methods"] as? [ String ]) ?? []
-        req.extra["rpc.methods"] = methods + [ methodName ]
-      }
-      
-      guard let call = XmlRpc.parseCall(req.body.text ?? "") else {
-        return res.sendStatus(400)
-      }
-      
-      if let methodName = methodName, call.methodName != methodName {
-        return next()
-      }
-
-      do {
-        let value = try execute(call)
-        res.send(XmlRpc.Response.value(value.xmlRpcValue).xmlString)
-      }
-      catch let error as XmlRpc.Fault {
-        res.send(XmlRpc.Response.fault(error).xmlString)
-      }
-      catch {
-        res.sendStatus(500)
-      }
-    }
-  }
-
-  @inlinable
-  @discardableResult
-  func systemListMethods() -> Self {
-    post { req, res, next in
-      guard let call = XmlRpc.parseCall(req.body.text ?? ""),
-            call.methodName == "system.listMethods" else {
-        return next()
-      }
-      let methods = (req.extra["rpc.methods"] as? [ String ]) ?? []
-      res.send(XmlRpc.Response(methods).xmlString)
-    }
+    post(xmlrpc.synchronousCall(methodName, execute: execute))
   }
 }
 

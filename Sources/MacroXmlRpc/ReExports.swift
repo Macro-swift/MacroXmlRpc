@@ -8,3 +8,4 @@
 
 @_exported import Macro
 @_exported import MacroExpress
+@_exported import enum XmlRpc.XmlRpc
