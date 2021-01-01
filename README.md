@@ -19,9 +19,12 @@ import MacroExpress // @Macro-swift
 import MacroXmlRpc  // @Macro-swift
 
 let app = express()
-app.use(logger("dev"), bodyParser.text())
 
-// TODO
+app.route("/RPC2")
+   .use(bodyParser.xmlRpcCall())
+   .rpc("ping") { _ in "pong" }
+   .rpc("add")  { ( a: Int, b: Int ) in a + b }
+   .use(xmlrpc.introspection())
 
 app.listen(1337)
 ```
