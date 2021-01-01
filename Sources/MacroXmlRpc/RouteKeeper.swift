@@ -9,8 +9,9 @@
 import MacroExpress
 import XmlRpc
 
-extension RouteKeeper {
+public extension RouteKeeper {
   
+  @inlinable
   @discardableResult
   func rpc(_ methodName: String? = nil,
            execute: @escaping
@@ -44,6 +45,7 @@ extension RouteKeeper {
     }
   }
 
+  @inlinable
   @discardableResult
   func systemListMethods() -> Self {
     post { req, res, next in
@@ -57,8 +59,9 @@ extension RouteKeeper {
   }
 }
 
-extension RouteKeeper {
+public extension RouteKeeper {
           
+  @inlinable
   @discardableResult
   func rpc<A1>(_ methodName: String,
                execute: @escaping ( A1 )
@@ -74,6 +77,7 @@ extension RouteKeeper {
     }
   }
           
+  @inlinable
   @discardableResult
   func rpc<A1, A2>(_ methodName: String,
                    execute: @escaping ( A1, A2 )
