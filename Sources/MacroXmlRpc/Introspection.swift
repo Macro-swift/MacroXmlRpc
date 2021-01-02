@@ -148,59 +148,49 @@ fileprivate extension IncomingMessage {
   }
 }
 
-@usableFromInline
-let xmlRpcMethodsRequestKey          = "macro.xmlrpc.method-names"
-@usableFromInline
-let xmlRpcHelpsRequestKey            = "macro.xmlrpc.method-helps"
-@usableFromInline
-let xmlRpcMethodSignaturesRequestKey = "macro.xmlrpc.method-signatures"
+private enum MethodNames: EnvironmentKey {
+  static let defaultValue : Set<String> = []
+  static let loggingKey   = "xmlrpc.names"
+}
+private enum MethodHelps: EnvironmentKey {
+  static let defaultValue : [ String : String ] = [:]
+  static let loggingKey   = "xmlrpc.helps"
+}
+private enum MethodSignatures: EnvironmentKey {
+  static let defaultValue : [ String : [ [ XmlRpc.Value.ValueType ] ] ] = [:]
+  static let loggingKey   = "xmlrpc.signatues"
+}
 
 extension IncomingMessage {
   
   fileprivate var knownXmlRpcMethodNames : Set<String> {
-    return (extra[xmlRpcMethodsRequestKey] as? Set<String>) ?? []
+    return environment[MethodNames.self]
   }
   
   @usableFromInline
   func addKnownXmlRpcMethod(_ methodName: String) {
-    if var methods = extra.removeValue(forKey: xmlRpcMethodsRequestKey)
-                 as? Set<String>
-    {
-      methods.insert(methodName)
-      extra[xmlRpcMethodsRequestKey] = methods
-    }
-    else {
-      extra[xmlRpcMethodsRequestKey] = Set([ methodName ])
-    }
+    environment[MethodNames.self].insert(methodName)
   }
   
   @usableFromInline
-  func addHelp(_ help: String, for method: String) {
-    var helps = extra.removeValue(forKey: xmlRpcHelpsRequestKey)
-                as? [ String : String ]
-             ?? [:]
-    helps[method] = help
-    extra[xmlRpcHelpsRequestKey] = helps
+  func addHelp(_ help: String, for methodName: String) {
+    environment[MethodHelps.self][methodName] = help
   }
   
   @usableFromInline
   func addSignature(_ signature: [ XmlRpc.Value.ValueType ],
                     for method: String)
   {
-    var values = extra.removeValue(forKey: xmlRpcMethodSignaturesRequestKey)
-             as? [ String : [ [ XmlRpc.Value.ValueType ] ] ]
-              ?? [:]
+    var values = environment[MethodSignatures.self]
     values[method, default: []].append(signature)
-    extra[xmlRpcMethodSignaturesRequestKey] = values
+    environment[MethodSignatures.self] = values
   }
   
   fileprivate var helps : [ String : String ] {
-    return (extra[xmlRpcHelpsRequestKey] as? [ String : String ]) ?? [:]
+    return environment[MethodHelps.self]
   }
   fileprivate var signatures : [ String : [ [ XmlRpc.Value.ValueType ] ] ] {
-    return (extra[xmlRpcMethodSignaturesRequestKey]
-                as? [ String : [ [ XmlRpc.Value.ValueType ] ] ])
-        ?? [:]
+    return environment[MethodSignatures.self]
   }
 }
 
