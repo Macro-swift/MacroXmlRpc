@@ -67,16 +67,15 @@ public extension xmlrpc {
           return res.send("Call to XML-RPC function failed.")
         }
       }
-
+      
       /* Body parser is not active */
-      if req.extra[xmlRpcRequestKey] == nil,
-         typeIs(req, [ "text/xml" ]) != nil
-      {
+      if req.environment[XmlRpcBodyKey.self] == nil, req.is("text/xml") {
         req.log.notice("Use of XML-RPC middleware w/o a bodyParser")
         let parser = bodyParser.xmlRpcCall()
         do {
           try parser(req, res) { (args: Any...) in
-            assert(req.extra[xmlRpcRequestKey] != nil) // at least .invalid!
+            assert(req.environment[XmlRpcBodyKey.self] != nil)
+              // at least .invalid!
             process()
           }
         }

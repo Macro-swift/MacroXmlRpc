@@ -36,10 +36,9 @@ public extension bodyParser {
    * This plays well w/ other body parsers. If no other parser was active,
    * it will fill `request.body` as `.text`.
    */
-  @inlinable
   static func xmlRpcCall() -> Middleware {
     return { req, res, next in
-      if req.extra[xmlRpcRequestKey] != nil { return next() } // parsed already
+      if req[XmlRpcBodyKey.self] != nil { return next() } // parsed already
       
       func registerCallInLogger() {
         guard let call = req.xmlRpcCall else { return }
@@ -104,11 +103,12 @@ public extension bodyParser {
       }
     }
   }
-
 }
 
-@usableFromInline
-let xmlRpcRequestKey = "macro.xmlrpc.body-parser"
+internal enum XmlRpcBodyKey: EnvironmentKey {
+  static let defaultValue : bodyParser.XmlRpcBodyParserBody? = nil
+  static let loggingKey   = "xmlrpc.body"
+}
 
 public extension IncomingMessage {
   
@@ -116,13 +116,9 @@ public extension IncomingMessage {
    * Returns the XML-RPC body parsed by e.g. `bodyParser.xmlRpcCall`. It is
    * only filled when the middleware executed, otherwise it returns `.invalid`.
    */
-  @inlinable
   var xmlRpcBody: bodyParser.XmlRpcBodyParserBody {
-    set { extra[xmlRpcRequestKey] = newValue }
-    get {
-      return (extra[xmlRpcRequestKey] as? bodyParser.XmlRpcBodyParserBody)
-          ?? .invalid
-    }
+    set { environment[XmlRpcBodyKey.self] = newValue }
+    get { return environment[XmlRpcBodyKey.self] ?? .invalid }
   }
 
   /**
