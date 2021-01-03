@@ -25,7 +25,7 @@ public extension RouteKeeper {
        where A1 : IntrospectibleXmlRpcValue,
              R  : IntrospectibleXmlRpcValue
   {
-    post(xmlrpc.synchronousCall(methodName) { call in
+    return post(xmlrpc.synchronousCall(methodName) { call in
       guard call.parameters.count == 1,
             let a1 = A1(xmlRpcValue: call.parameters[0])
        else { throw XmlRpc.Fault(code: 400, reason: "Invalid parameters") }
@@ -42,7 +42,7 @@ public extension RouteKeeper {
              A2 : IntrospectibleXmlRpcValue,
              R  : IntrospectibleXmlRpcValue
   {
-    post(xmlrpc.synchronousCall(methodName) { call in
+    return post(xmlrpc.synchronousCall(methodName) { call in
       guard call.parameters.count == 2,
             let a1 = A1(xmlRpcValue: call.parameters[0]),
             let a2 = A2(xmlRpcValue: call.parameters[1])
@@ -57,27 +57,27 @@ public extension RouteKeeper {
 
 extension String: IntrospectibleXmlRpcValue {
   @inlinable
-  public static var xmlRpcValueType : XmlRpc.Value.ValueType { .string }
+  public static var xmlRpcValueType : XmlRpc.Value.ValueType { return .string }
 }
 
 extension Int: IntrospectibleXmlRpcValue {
   @inlinable
-  public static var xmlRpcValueType : XmlRpc.Value.ValueType { .int }
+  public static var xmlRpcValueType : XmlRpc.Value.ValueType { return .int }
 }
 
 extension Double: IntrospectibleXmlRpcValue {
   @inlinable
-  public static var xmlRpcValueType : XmlRpc.Value.ValueType { .double }
+  public static var xmlRpcValueType : XmlRpc.Value.ValueType { return .double }
 }
 
 extension Bool: IntrospectibleXmlRpcValue {
   @inlinable
-  public static var xmlRpcValueType : XmlRpc.Value.ValueType { .bool }
+  public static var xmlRpcValueType : XmlRpc.Value.ValueType { return .bool }
 }
 
 extension Collection where Element : IntrospectibleXmlRpcValue {
   @inlinable
-  public static var xmlRpcValueType : XmlRpc.Value.ValueType { .array }
+  public static var xmlRpcValueType : XmlRpc.Value.ValueType { return .array }
 }
 
 extension Array   : IntrospectibleXmlRpcValue
@@ -94,7 +94,9 @@ extension Dictionary : IntrospectibleXmlRpcValue
           Value      : IntrospectibleXmlRpcValue
 {
   @inlinable
-  public static var xmlRpcValueType : XmlRpc.Value.ValueType { .dictionary }
+  public static var xmlRpcValueType : XmlRpc.Value.ValueType {
+    return .dictionary
+  }
 }
 
 #if canImport(Foundation)
@@ -103,11 +105,15 @@ extension Dictionary : IntrospectibleXmlRpcValue
   
   extension DateComponents: IntrospectibleXmlRpcValue {
     @inlinable
-    public static var xmlRpcValueType : XmlRpc.Value.ValueType { .dateTime }
+    public static var xmlRpcValueType : XmlRpc.Value.ValueType {
+      return .dateTime
+    }
   }
 
   extension URL: IntrospectibleXmlRpcValue {
     @inlinable
-    public static var xmlRpcValueType : XmlRpc.Value.ValueType { .string }
+    public static var xmlRpcValueType : XmlRpc.Value.ValueType {
+      return .string
+    }
   }
 #endif // canImport(Foundation)
