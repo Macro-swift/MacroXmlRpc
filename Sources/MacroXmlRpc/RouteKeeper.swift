@@ -18,6 +18,6 @@ public extension RouteKeeper {
              ( XmlRpc.Call ) throws -> XmlRpcValueRepresentable)
        -> Self
   {
-    post(xmlrpc.synchronousCall(methodName, execute: execute))
+    return post(xmlrpc.synchronousCall(methodName, execute: execute))
   }
 }
