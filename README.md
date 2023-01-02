@@ -40,6 +40,14 @@ app.listen(1337)
 - `macro.router.matcher.debug`
 - `macro.router.walker.debug`
 
+## Async/Await
+
+This doesn't support `async`/`await` yet as proper streaming
+would require custom executors. Which are not yet available.
+
+Maybe a temporary measure would be appropriate just for XML-RPC (which
+rarely has streaming consumers/producers).
+
 ### Links
 
 - [Writing an Swift XML-RPC Server](http://www.alwaysrightinstitute.com/macro-xmlrpc/)
@@ -56,13 +64,13 @@ app.listen(1337)
 
 **Macro XML-RPC** is brought to you by
 the
-[Always Right Institute](http://www.alwaysrightinstitute.com)
+[Helge Heß](https://helgehess.eu/)
 and
-[ZeeZide](http://zeezide.de).
+[ZeeZide](https://zeezide.de).
 We like 
 [feedback](https://twitter.com/ar_institute), 
 GitHub stars, 
-cool [contract work](http://zeezide.com/en/services/services.html),
+cool [contract work](https://zeezide.com/en/services/services.html),
 presumably any form of praise you can think of.
 
 There is a `#microexpress` channel on the 
