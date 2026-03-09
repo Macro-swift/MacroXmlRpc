@@ -6,6 +6,8 @@ let package = Package(
   
   name: "MacroXmlRpc",
 
+  platforms: [ .macOS(.v12), .iOS(.v15) ],
+
   products: [
     .library(name: "MacroXmlRpc", targets: [ "MacroXmlRpc" ])
   ],
