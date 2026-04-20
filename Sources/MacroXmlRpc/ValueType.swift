@@ -3,32 +3,24 @@
 //  MacroXmlRpc
 //
 //  Created by Helge Hess.
-//  Copyright © 2020 ZeeZide GmbH. All rights reserved.
+//  Copyright © 2020-2026 ZeeZide GmbH. All rights reserved.
 //
 
 import protocol XmlRpc.XmlRpcValueRepresentable
 
 public extension XmlRpc.Value {
   
-  #if swift(>=5.1)
   /**
    * The various possible XML-RPC value types used in XML-RPC introspection.
    * Note that those are flat, i.e. arrays and dictionaries are not further
    * described.
    */
   @frozen
-  enum ValueType: Hashable {
+  enum ValueType: Hashable, Sendable {
     case null
     case string, bool, int, double, dateTime, data
     case array, dictionary
   }
-  #else
-  enum ValueType: Hashable {
-    case null
-    case string, bool, int, double, dateTime, data
-    case array, dictionary
-  }
-  #endif
   
   @inlinable
   var xmlRpcValueType: ValueType {
@@ -48,6 +40,7 @@ public extension XmlRpc.Value {
 
 extension XmlRpc.Value.ValueType: XmlRpcValueRepresentable {
 
+  @inlinable
   public init?(xmlRpcValue: XmlRpc.Value) {
     switch xmlRpcValue.stringValue {
       case "i4", "int"        : self = .int
@@ -62,6 +55,8 @@ extension XmlRpc.Value.ValueType: XmlRpcValueRepresentable {
       default: return nil
     }
   }
+  
+  @inlinable
   public var xmlRpcValue : XmlRpc.Value {
     switch self {
       case .null       : return "null"

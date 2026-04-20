@@ -11,7 +11,7 @@ import enum XmlRpc.XmlRpc
 
 public extension bodyParser {
   
-  enum XmlRpcBodyParserBody {
+  enum XmlRpcBodyParserBody: Sendable {
     case invalid
     case call    (XmlRpc.Call)
     case response(XmlRpc.Response)
